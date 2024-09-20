@@ -1,0 +1,49 @@
+<?php include __DIR__ . '/../layout/header.php'; ?>
+<?php include __DIR__ . '/../layout/navbar.php'; ?>
+
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <h2 class="page-title">
+                    Recetas
+                </h2>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                    <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M12 5l0 14" />
+                            <path d="M5 12l14 0" />
+                        </svg>
+                        Agregar nueva receta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Your name</label>
+                    <input type="text" class="form-control" placeholder="Name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <form method="post">
+                        <textarea id="tinymce-mytextarea">
+                            <b>Agregue su receta</b>
+                        </textarea>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include __DIR__ . '/../layout/footer.php'; ?>
