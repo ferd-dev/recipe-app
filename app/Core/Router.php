@@ -1,38 +1,30 @@
 <?php
 
-namespace App\Core;
+use function FastRoute\simpleDispatcher;
 
-class Router
-{
-    public function dispatch($url)
-    {
-        $url = trim($url, '/');
-        $parts = explode('/', $url);
+$routes = require __DIR__ . '/../Routes/routes.php';
+$dispatcher = simpleDispatcher($routes);
 
-        $controllerName = isset($parts[0]) && $parts[0] !== '' ? ucfirst($parts[0]) . 'Controller' : 'HomeController';
-        $controllerClass = "App\\Controllers\\$controllerName";
+$httpMethod = $_SERVER['REQUEST_METHOD'];
+$uri = $_SERVER['REQUEST_URI'];
 
-        if (!class_exists($controllerClass)) {
-            $this->notFoundPage("Controller $controllerName not found");
-            return;
-        }
+if (false !== $pos = strpos($uri, '?')) {
+    $uri = substr($uri, 0, $pos);
+}
+$uri = rawurldecode($uri);
 
-        $controller = new $controllerClass();
-        $method = isset($parts[1]) && $parts[1] !== '' ? $parts[1] : 'index';
+$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+switch ($routeInfo[0]) {
+    case FastRoute\Dispatcher::NOT_FOUND:
+        echo '404 - Página no encontrada';
+        break;
+    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+        echo '405 - Método no permitido';
+        break;
+    case FastRoute\Dispatcher::FOUND:
+        [$controller, $method] = $routeInfo[1];
+        $vars = $routeInfo[2];
 
-        if (!method_exists($controller, $method)) {
-            $this->notFoundPage("Method $method not found in $controllerName");
-            return;
-        }
-
-        $params = array_slice($parts, 2);
-        call_user_func_array([$controller, $method], $params);
-    }
-
-    private function notFoundPage($message)
-    {
-        $controllerClass = "App\\Controllers\\ErrorPageController";
-        $controller = new $controllerClass();
-        $controller->notFound($message);
-    }
+        (new $controller)->$method(...array_values($vars));
+        break;
 }
